@@ -13,10 +13,13 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import org.littletonrobotics.junction.Logger;
 
 public class ExampleSubsystem extends SubsystemBase {
 
   private TalonFX leverMotor = new TalonFX(1, "can");
+  private VelocityVoltage spinner;
+  private PositionTorqueCurrentFOC focThing;
   
   public ExampleSubsystem() {
     configNT();
@@ -47,5 +50,17 @@ public class ExampleSubsystem extends SubsystemBase {
             }
         );
   }
+
+  double num = 0;
+  @Override
+  public void periodic(){
+    SmartDashboard.putNumber("Control", num);
+    SmartDashboard.getNumber("Control", num);
+
+    leverMotor.setControl(spinner.withVelocity(num));
+
+    Logger.recordOutput("Ordered", num);
+    Logger.recordOutput("Actual", leverMotor.getVelocity());
+    }
 
 }
