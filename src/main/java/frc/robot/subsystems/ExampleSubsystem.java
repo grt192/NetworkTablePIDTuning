@@ -25,12 +25,14 @@ public class ExampleSubsystem extends SubsystemBase {
     configNT();
   }
 
-  public void configPID(double p, double i, double d, double ff) {
+  public void configPID(double p, double i, double d, double ff, double v, double s) {
 
         Slot0Configs slot0Configs = new Slot0Configs(); 
         slot0Configs.kP = p;
         slot0Configs.kI = i;
         slot0Configs.kD = d;
+        slot0Configs.kV = v;
+        slot0Configs.kS = s;
         slot0Configs.kG = ff;
         
         leverMotor.getConfigurator().apply(slot0Configs);
@@ -41,12 +43,12 @@ public class ExampleSubsystem extends SubsystemBase {
 
     NetworkTableInstance.getDefault().getTable("values")
             .getEntry("PIDF")
-            .setDoubleArray(new double[] {5, 0, 0, 0});
+            .setDoubleArray(new double[] {5, 0, 0, 0, 0, 0});
 
     NetworkTableInstance.getDefault().getTable("values").addListener("PIDF", EnumSet.of(NetworkTableEvent.Kind.kValueAll),
             (table, key, event) -> {
                 double[] pidf = event.valueData.value.getDoubleArray();
-                configPID(pidf[0], pidf[1], pidf[2], pidf[3]);
+                configPID(pidf[0], pidf[1], pidf[2], pidf[3], pidf[4], pidf[5]);
             }
         );
   }
